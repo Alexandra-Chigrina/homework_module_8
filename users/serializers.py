@@ -1,6 +1,7 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 
-from users.models import User, Payment
+from users.models import Payment, User
+
 
 class PaymentSerializer(ModelSerializer):
     class Meta:
@@ -11,7 +12,7 @@ class PaymentSerializer(ModelSerializer):
 class PaymentShortSerializer(ModelSerializer):
     class Meta:
         model = Payment
-        fields = ['id', 'paid_course', 'paid_lesson', 'amount', 'method', 'payment_date']
+        fields = ["id", "paid_course", "paid_lesson", "amount", "method", "payment_date"]
 
 
 class UserSerializer(ModelSerializer):
@@ -19,4 +20,4 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'city', 'avatar', 'first_name', 'last_name', 'payments']
+        fields = ["id", "email", "phone", "city", "avatar", "first_name", "last_name", "payments"]
