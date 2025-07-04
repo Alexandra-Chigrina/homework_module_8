@@ -5,13 +5,27 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserSerializer, UserRegisterSerializer
+from users.permissions import IsSelfUser
+from users.serializers import PaymentSerializer, UserSerializer, UserRegisterSerializer, UserPublicSerializer
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['retrieve', 'update', 'partial_update']:
+            obj = self.get_object()
+            if obj == self.request.user:
+                return UserSerializer  # Полный
+        return UserPublicSerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update']:
+            self.permission_classes = [IsAuthenticated, IsSelfUser]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return [permission() for permission in self.permission_classes]
 
 
 class UserCreateAPIView(CreateAPIView):
