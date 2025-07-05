@@ -5,10 +5,10 @@ from lms.apps import LmsConfig
 from lms.views import (
     CourseViewSet,
     LessonCreateAPIView,
+    LessonDestroyAPIView,
     LessonListAPIView,
     LessonRetrieveAPIView,
-    LessonDestroyAPIView,
-    LessonUpdateAPIView,
+    LessonUpdateAPIView
 )
 
 app_name = LmsConfig.name
