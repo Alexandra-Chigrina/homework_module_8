@@ -1,7 +1,7 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 from lms.models import Course, Lesson, Subscription
 
@@ -29,14 +29,8 @@ class CourseTestCase(APITestCase):
         url = reverse("lms:course-detail", args=(self.course.pk,))
         response = self.client.get(url)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data.get("title"),
-            self.course.title
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get("title"), self.course.title)
 
     def test_course_list(self):
         url = reverse("lms:course-list")
@@ -58,16 +52,16 @@ class CourseTestCase(APITestCase):
                             "description": self.lesson.description,
                             "preview": None,
                             "course": self.course.pk,
-                            "owner": self.user.pk
+                            "owner": self.user.pk,
                         }
                     ],
                     "is_subscribed": False,
                     "title": self.course.title,
                     "preview": None,
                     "description": self.course.description,
-                    "owner": self.user.pk
+                    "owner": self.user.pk,
                 },
-            ]
+            ],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, result)
@@ -132,11 +126,7 @@ class LessonTestCase(APITestCase):
 
     def test_lesson_create(self):
         url = reverse("lms:lesson_create")
-        data = {
-            "title": "New lesson",
-            "course": self.course.id,
-            "video_url": "http://youtube.com/video"
-        }
+        data = {"title": "New lesson", "course": self.course.id, "video_url": "http://youtube.com/video"}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Lesson.objects.all().count(), 2)
@@ -145,14 +135,8 @@ class LessonTestCase(APITestCase):
         url = reverse("lms:lesson_retrieve", args=(self.lesson.pk,))
         response = self.client.get(url)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data.get("title"),
-            self.lesson.title
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get("title"), self.lesson.title)
 
     def test_lesson_list(self):
         url = reverse("lms:lesson_list")
@@ -170,9 +154,9 @@ class LessonTestCase(APITestCase):
                     "description": self.lesson.description,
                     "preview": None,
                     "course": self.course.pk,
-                    "owner": self.user.pk
+                    "owner": self.user.pk,
                 }
-            ]
+            ],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data, result)

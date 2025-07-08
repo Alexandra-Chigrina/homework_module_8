@@ -1,9 +1,9 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
+from django.shortcuts import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
 
-from lms.models import Course, Lesson
+from lms.models import Course
 from users.models import Payment
 
 User = get_user_model()
