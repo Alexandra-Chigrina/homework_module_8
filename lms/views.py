@@ -22,17 +22,19 @@ class CourseViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        if not user.is_authenticated:
+            return Course.objects.none()
         if user.groups.filter(name="moderator").exists():
             return Course.objects.all()
         return Course.objects.filter(owner=user)
 
     def get_permissions(self):
         if self.action == "create":
-            self.permission_classes = [NotModerator]
+            self.permission_classes = [IsAuthenticated, NotModerator]
         elif self.action in ["update", "partial_update", "retrieve", "list"]:
-            self.permission_classes = [IsModerator | IsOwner]
+            self.permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         elif self.action == "destroy":
-            self.permission_classes = [IsOwner, NotModerator]
+            self.permission_classes = [IsAuthenticated, IsOwner, NotModerator]
         return [permission() for permission in self.permission_classes]
 
 
