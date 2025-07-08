@@ -1,6 +1,13 @@
+from urllib.parse import urlparse
+
 from rest_framework.serializers import ValidationError
 
 
 def validate_youtube_url(value):
-    if value and "youtube.com" not in value:
-        raise ValidationError("Разрешены только ссылки на youtube.com.")
+    if value:
+        parsed_url = urlparse(value)
+        domain = parsed_url.netloc.lower()
+
+        allowed_domains = {"youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"}
+        if domain not in allowed_domains:
+            raise ValidationError("Разрешены только ссылки на youtube.com или youtu.be.")

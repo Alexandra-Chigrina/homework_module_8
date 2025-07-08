@@ -204,13 +204,13 @@ class SubscriptionTestCase(APITestCase):
 
     def test_subscribe_to_course(self):
         response = self.client.post(self.url, {"course_id": self.course.pk})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Subscription.objects.filter(user=self.user, course=self.course).exists())
 
     def test_unsubscribe_to_course(self):
         Subscription.objects.create(user=self.user, course=self.course)
         response = self.client.post(self.url, {"course_id": self.course.pk})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Subscription.objects.filter(user=self.user, course=self.course).exists())
 
     def test_unauthorized_user_cannot_subscribe(self):

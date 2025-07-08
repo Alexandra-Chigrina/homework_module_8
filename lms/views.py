@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -106,10 +107,8 @@ class SubscriptionAPIView(APIView):
 
         if subs.exists():
             subs.delete()
-            message = "Подписка удалена."
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         else:
             Subscription.objects.create(user=request.user, course=course)
-            message = "Подписка добавлена."
-
-        return Response({"message": message})
+            return Response(status=status.HTTP_201_CREATED)
