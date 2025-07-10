@@ -1,9 +1,12 @@
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import filters
+from rest_framework import filters, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import Payment, User
@@ -23,7 +26,9 @@ from users.services import create_stripe_price, create_stripe_product, create_st
     name="retrieve",
     decorator=swagger_auto_schema(
         operation_summary="Получить пользователя по ID",
-        operation_description="Возвращает полный профиль, если пользователь - владелец профиля, иначе — публичные данные.",
+        operation_description="""
+        Возвращает полный профиль, если пользователь - владелец профиля, иначе — публичные данные.
+        """,
     ),
 )
 @method_decorator(
@@ -89,7 +94,9 @@ class UserCreateAPIView(CreateAPIView):
     name="list",
     decorator=swagger_auto_schema(
         operation_summary="Список платежей",
-        operation_description="Возвращает список всех платежей с возможностью фильтрации по курсам, урокам и методу оплаты.",
+        operation_description="""
+        Возвращает список всех платежей с возможностью фильтрации по курсам, урокам и методу оплаты.
+        """,
     ),
 )
 @method_decorator(
@@ -136,7 +143,7 @@ class PaymentViewSet(ModelViewSet):
     decorator=swagger_auto_schema(
         operation_summary="Создать платёжную сессию Stripe",
         operation_description="""
-Создаёт платёжную сессию Stripe для оплаты курса или урока.  
+Создаёт платёжную сессию Stripe для оплаты курса или урока.
 Возвращает ссылку на оплату и ID сессии Stripe.
 """,
     ),
@@ -162,3 +169,28 @@ class PaymentSessionCreateAPIView(CreateAPIView):
         payment.stripe_session_id = session_data["session_id"]
         payment.payment_url = session_data["url"]
         payment.save()
+
+
+class PaymentStatusAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Проверка статуса оплаты",
+        operation_description="Возвращает статус Stripe-сессии по ID платежа.",
+    )
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk, user=request.user)
+
+        if not payment.stripe_session_id:
+            return Response({"detail": "Этот платеж не связан со страйп-сессией"}, status=status.HTTP_404_NOT_FOUND)
+
+        session_data = retrieve_checkout_session(payment.stripe_session_id)
+
+        return Response(
+            {
+                "status": session_data.get("status"),
+                "payment_status": session_data.get("payment_status"),
+                "amount_total": session_data.get("amount_total") / 100,
+                "currency": session_data.get("currency"),
+            }
+        )

@@ -179,7 +179,9 @@ class SubscriptionAPIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Подписка/отписка от курса",
-        operation_description="Добавляет или удаляет подписку на курс. Возвращает 201 при добавлении, 204 при удалении.",
+        operation_description="""
+        Добавляет или удаляет подписку на курс. Возвращает 201 при добавлении, 204 при удалении.
+        """,
         responses={201: "Подписка добавлена", 204: "Подписка удалена", 401: "Не авторизован", 404: "Курс не найден"},
     )
     def post(self, request, *args, **kwargs):
