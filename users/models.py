@@ -64,6 +64,12 @@ class Payment(models.Model):
         verbose_name="Способ оплаты",
         help_text="Выберите способ оплаты: наличные или перевод",
     )
+    stripe_session_id = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="ID сессии", help_text="Укажите ID сессии"
+    )
+    payment_url = models.URLField(
+        max_length=400, blank=True, null=True, verbose_name="Ссылка на оплату", help_text="Укажите ссылку на оплату"
+    )
 
     class Meta:
         verbose_name = "Платёж"
