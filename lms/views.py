@@ -11,6 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from lms.models import Course, Lesson, Subscription
 from lms.paginators import CustomPagination
 from lms.serializers import CourseSerializer, LessonSerializer
+from lms.tasks import send_course_update_email
 from users.permissions import IsModerator, IsOwner, NotModerator
 
 
@@ -81,6 +82,10 @@ class CourseViewSet(ModelViewSet):
         elif self.action == "destroy":
             self.permission_classes = [IsAuthenticated, IsOwner, NotModerator]
         return [permission() for permission in self.permission_classes]
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        send_course_update_email.delay(instance.id)
 
 
 @method_decorator(
