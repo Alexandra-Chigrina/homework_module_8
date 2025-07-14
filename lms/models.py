@@ -19,6 +19,7 @@ class Course(models.Model):
         related_name="courses",
         verbose_name="Владелец",
     )
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

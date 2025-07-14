@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from datetime import timedelta
 
 from lms.models import Course, Lesson, Subscription
 from lms.paginators import CustomPagination
@@ -84,8 +86,12 @@ class CourseViewSet(ModelViewSet):
         return [permission() for permission in self.permission_classes]
 
     def perform_update(self, serializer):
+        course = self.get_object()
+        last_update = course.updated_at
+
         instance = serializer.save()
-        send_course_update_email.delay(instance.id)
+        if timezone.now() - last_update > timedelta(hours=4):
+            send_course_update_email.delay(instance.id)
 
 
 @method_decorator(

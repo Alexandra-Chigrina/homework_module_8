@@ -5,7 +5,7 @@ from lms.models import Course, Lesson, Subscription
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "owner")
+    list_display = ("id", "title", "owner", "updated_at")
     list_filter = ("owner",)
     search_fields = ("title",)
 
