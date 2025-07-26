@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -59,6 +61,7 @@ class CourseTestCase(APITestCase):
                     "title": self.course.title,
                     "preview": None,
                     "description": self.course.description,
+                    "updated_at": ANY,
                     "owner": self.user.pk,
                 },
             ],
