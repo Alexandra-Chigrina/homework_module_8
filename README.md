@@ -121,49 +121,56 @@ docker-compose up -d --build
 
 ## **Структура проекта**
 
-mailing_service
-├── mailing/ # Приложение сервиса рассылок
-│ ├── migrations/ # Миграции базы данных Django
-│ ├── templates/ # Шаблоны HTML
-│ ├── mailing/ # Шаблоны, относящиеся к приложению mailing
-│ ├── urls.py # Маршруты для mailing
-│ ├── admin.py # Настройка админки Django
-│ ├── views.py # Контроллеры отображения страниц и обработки форм
-│ ├── services.py # Бизнес-логика
-│ ├── models.py # Модели: Client, Message, Mailing, MailingAttempt
-│ ├── forms.py # Кастомные формы
-│ ├── management/commands/ # Кастомные команды
-│ ├── templatetags # Пользовательские шаблонные теги
+homework_module_8
+├── config/                         # Конфигурация проекта Django
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── celery.py                   # Настройки Celery
+│   ├── settings.py                 # Основные настройки проекта
+│   ├── urls.py                     # Главные маршруты проекта
+│   └── wsgi.py
 │
-├── users/ # Приложение для управления пользователями
-│ ├── templates/users/ # Шаблоны регистрации, логина, профиля
-│ ├── forms.py # Формы для регистрации и профиля
-│ ├── models.py # Кастомная модель пользователя
-│ ├── views.py # Представления для регистрации, логина, профиля
-│ ├── urls.py # Маршруты users
+├── lms/                            # Приложение с курсами, уроками, подписками
+│   ├── management/                 # Кастомные Django-команды
+│   ├── migrations/                 # Миграции базы данных для приложения lms
+│   │   └── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py                   # Кастомные модели (Course, Lesson, Subscription)
+│   ├── paginators.py               # Кастомные пагинаторы
+│   ├── serializers.py              # Сериализаторы
+│   ├── tasks.py                    # Celery-задачи, связанные с LMS
+│   ├── views.py                    # View-контроллеры
+│   ├── validators.py               # Валидаторы моделей/сериализаторов
+│   ├── urls.py                     # Маршруты lms
+│   └── tests/                      # Тесты
 │
-├── config/ # Конфигурация проекта Django
-│ ├── settings.py # Основные настройки проекта
-│ ├── urls.py # Маршруты для всего проекта
+├── users/                          # Приложение управления пользователями
+│   ├── management/                 # Кастомные Django-команды
+│   ├── migrations/                 # Миграции базы данных для users
+│   │   └── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py                   # Кастомная модель User
+│   ├── permission.py               # DRF-разрешения
+│   ├── serializers.py              # Сериализаторы пользователя
+│   ├── tests.py                    # Тесты
+│   ├── tasks.py                    # Фоновые задачи Celery (например, деактивация)
+│   ├── urls.py                     # Маршруты users
+│   └── views.py                    # View-контроллеры (регистрация, профиль)
 │
-├── media/ # Медиафайлы, загруженные пользователями
-│ ├── mailing/images.py
-│ ├── user/avatars .py
+├── media/                          # Директория для хранения медиафайлов (если используются)
 │
-├── static/ # Статические файлы (CSS, JS, изображения)
-│ ├── css/                         
-│ ├── bootstrap.min.css # Bootstrap стилизация для шаблонов
-│ ├── js/                           
-│ ├── bootstrap.bundle.min.js # Bootstrap функциональность #
-│
-├── logs/ # Файл логов
-│
-├── manage.py # Управляющий файл Django-проекта
-├── .venv # Виртуальное окружение
-├── .gitignore # Исключения файлов из Git
-├── .flake8 # Настройки линтера Flake8
-├── .poetry.lock # Фиксированные зависимости проекта  
-├── .pyproject.toml # Основной конфигурационный файл проекта  
-├── .env # Переменные окружения (не загружается в Git)
-├── .env .sample # Шаблон .env
-├── README.md # Документация  
+├── .coverage                       # Файл покрытия тестами
+├── htmlcov/                        # Отчёты покрытия тестов
+├── manage.py                       # Управляющий файл Django
+├── .venv                           # Виртуальное окружение
+├── .env                            # Файл с переменными окружения
+├── .env.sample                     # Пример .env файла
+├── .gitignore                      # Исключения Git
+├── Dockerfile                      # Сборка образа Django-приложения
+├── docker-compose.yml              # Docker-оркестрация всех сервисов
+├── .flake8                         # Настройки линтера flake8
+├── poetry.lock                     # Фиксация зависимостей Poetry
+├── pyproject.toml                  # Основной конфиг проекта
+├── README.md                       # Документация проекта
