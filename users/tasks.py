@@ -1,6 +1,5 @@
-from dateutil.relativedelta import relativedelta
-
 from celery import shared_task
+from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
 from users.models import User
